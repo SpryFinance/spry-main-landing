@@ -12,7 +12,20 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+  			display: ['var(--font-display)', 'var(--font-sans)', 'system-ui', 'sans-serif']
+  		},
   		colors: {
+  			spry: {
+  				ink: '#1C1C1C',
+  				coal: '#222222',
+  				fog: '#F5F5F5',
+  				violet: '#8936FF',
+  				grape: '#A900FF',
+  				plum: '#6B21D8',
+  				mint: '#86EFAC'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

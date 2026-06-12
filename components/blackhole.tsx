@@ -42,7 +42,7 @@ interface BlackHoleProps {
 export default function BlackHole({ speedMultiplier = 1 }: BlackHoleProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | undefined>(undefined)
  const isMobile=useIsMobile()
   useEffect(() => {
     const canvas = canvasRef.current

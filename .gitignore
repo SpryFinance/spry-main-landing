@@ -28,3 +28,6 @@ next-env.d.ts
 
 # mac files
 .DS_STORE
+
+# local claude code config
+.claude/

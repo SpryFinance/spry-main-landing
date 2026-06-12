@@ -5,9 +5,9 @@ import * as THREE from "three"
 
 export default function GooShader() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const sceneRef = useRef<THREE.Scene>()
-  const rendererRef = useRef<THREE.WebGLRenderer>()
-  const animationRef = useRef<number>()
+  const sceneRef = useRef<THREE.Scene | undefined>(undefined)
+  const rendererRef = useRef<THREE.WebGLRenderer | undefined>(undefined)
+  const animationRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     if (!containerRef.current) return
