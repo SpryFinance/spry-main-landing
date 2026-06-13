@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Spry Finance",
   },
   description:
-    "Spry is a dynamic-fee Uniswap v4 hook that scales swap fees with price impact, turning arbitrage-driven impermanent loss into yield for liquidity providers. Live on Base Sepolia.",
+    "Spry is a dynamic-fee Uniswap v4 hook that scales swap fees with price impact, turning arbitrage-driven impermanent loss into yield for liquidity providers. Live on Unichain & Base Sepolia.",
   keywords: [
     "Spry Finance",
     "DeFi",

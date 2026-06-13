@@ -183,13 +183,6 @@ export default function LandingPageV6() {
                   </Link>
                 ))}
                 <a
-                  href="/Spry-Whitepaper.pdf"
-                  className="hover:text-white transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(137,54,255,0.6)]"
-                  download
-                >
-                  Whitepaper
-                </a>
-                <a
                   href="https://github.com/SpryFinance"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -244,14 +237,6 @@ export default function LandingPageV6() {
                     {link.label}
                   </Link>
                 ))}
-                <a
-                  href="/Spry-Whitepaper.pdf"
-                  className="px-2 py-2 rounded-lg text-spry-fog/80 hover:text-white hover:bg-white/5 transition-colors"
-                  download
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Whitepaper
-                </a>
                 <a
                   href="https://github.com/SpryFinance"
                   target="_blank"
@@ -322,7 +307,7 @@ export default function LandingPageV6() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-spry-mint opacity-60"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-spry-mint"></span>
                 </span>
-                Live on Base Sepolia · Built on Uniswap v4
+                Live on Unichain & Base Sepolia · Built on Uniswap v4
               </span>
             </motion.div>
             <motion.h1
@@ -645,8 +630,8 @@ export default function LandingPageV6() {
               </h2>
               <p className="max-w-xl mx-auto text-spry-fog/70 mb-8">
                 Swap and provide liquidity in dynamic-fee Uniswap v4 pools on
-                Base Sepolia. Fully open source under GPL-3.0 and headed to
-                audit before mainnet.
+                Unichain & Base Sepolia. Fully open source under GPL-3.0 and
+                headed to audit before mainnet.
               </p>
               <div className="flex flex-col items-center gap-4">
                 <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -844,7 +829,7 @@ export default function LandingPageV6() {
                 under GPL-3.0.
               </p>
               <p className="text-sm text-spry-fog/50">
-                Built on Uniswap v4 · Live on Base Sepolia
+                Built on Uniswap v4 · Live on Unichain & Base Sepolia
               </p>
             </div>
           </div>

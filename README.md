@@ -112,7 +112,7 @@ spry-main-landing/
 ## Resources
 
 - 🌐 Website: **[spry.fi](https://spry.fi)**
-- 🚀 App (Base Sepolia testnet): **[app.spry.fi](https://app.spry.fi)**
+- 🚀 App (Unichain & Base Sepolia testnet): **[app.spry.fi](https://app.spry.fi)**
 - 📄 Whitepaper: [spry.fi/Spry-Whitepaper.pdf](https://spry.fi/Spry-Whitepaper.pdf)
 - 🎞️ Pitch deck: [spry.fi/deck](https://spry.fi/deck)
 - 🐙 GitHub organization: [github.com/SpryFinance](https://github.com/SpryFinance)
