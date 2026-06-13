@@ -307,7 +307,7 @@ export default function LandingPageV6() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-spry-mint opacity-60"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-spry-mint"></span>
                 </span>
-                Live on Unichain & Base Sepolia · Built on Uniswap v4
+                Live on Unichain Sepolia & Base Sepolia · Built on Uniswap v4
               </span>
             </motion.div>
             <motion.h1
@@ -630,7 +630,7 @@ export default function LandingPageV6() {
               </h2>
               <p className="max-w-xl mx-auto text-spry-fog/70 mb-8">
                 Swap and provide liquidity in dynamic-fee Uniswap v4 pools on
-                Unichain & Base Sepolia. Fully open source under GPL-3.0 and
+                Unichain Sepolia & Base Sepolia. Fully open source under GPL-3.0 and
                 headed to audit before mainnet.
               </p>
               <div className="flex flex-col items-center gap-4">
@@ -829,7 +829,7 @@ export default function LandingPageV6() {
                 under GPL-3.0.
               </p>
               <p className="text-sm text-spry-fog/50">
-                Built on Uniswap v4 · Live on Unichain & Base Sepolia
+                Built on Uniswap v4 · Live on Unichain Sepolia & Base Sepolia
               </p>
             </div>
           </div>
