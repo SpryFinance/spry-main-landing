@@ -62,7 +62,11 @@ interface Tier {
 }
 
 const FEE_CAP_MAX = 9.9; // global y-axis ceiling (Exotic's cap), percent
-const MAX_IMPACT = 200; // x-axis ceiling, cumulative price impact in percent
+// x-axis ceiling. The contract's danger zone runs to 500% cumulative impact
+// (dangerHigh = 5000 per-mille), where the fee steps up to the flat cap.
+// Showing 0-600% lets each curve climb its full four-zone path and then
+// plateau at its own cap.
+const MAX_IMPACT = 600;
 const DEFAULT_TIER_ID = "blue";
 
 // Brand escalation: mint -> violet -> plum -> grape, plus a light grape for the
@@ -251,7 +255,7 @@ export default function SpryFeeCurve() {
   const strokeId = `spryFeeStroke-${uid}`;
 
   const [tierId, setTierId] = useState<string>(DEFAULT_TIER_ID);
-  const [impact, setImpact] = useState<number>(70);
+  const [impact, setImpact] = useState<number>(180);
   const [dragging, setDragging] = useState(false);
 
   const tier = useMemo(
@@ -275,10 +279,15 @@ export default function SpryFeeCurve() {
       {
         id: "danger" as ZoneId,
         from: alertHighPct,
-        to: MAX_IMPACT,
+        to: tier.dangerHigh / 10,
         fee: feePct(tier.dangerHigh / 10, tier),
       },
-      { id: "cap" as ZoneId, from: null, to: null, fee: tier.cap },
+      {
+        id: "cap" as ZoneId,
+        from: tier.dangerHigh / 10,
+        to: MAX_IMPACT,
+        fee: tier.cap,
+      },
     ];
   }, [tier]);
 
@@ -526,25 +535,23 @@ export default function SpryFeeCurve() {
                     />
 
                     {/* Zone shading for the selected tier */}
-                    {zones
-                      .filter((z) => z.from !== null && z.to !== null)
-                      .map((z) => (
-                        <ReferenceArea
-                          key={z.id}
-                          x1={z.from as number}
-                          x2={z.to as number}
-                          fill={ZONE_COLOR[z.id]}
-                          fillOpacity={z.id === activeZoneId ? 0.12 : 0.05}
-                          stroke="none"
-                          ifOverflow="extendDomain"
-                        />
-                      ))}
+                    {zones.map((z) => (
+                      <ReferenceArea
+                        key={z.id}
+                        x1={z.from}
+                        x2={z.to}
+                        fill={ZONE_COLOR[z.id]}
+                        fillOpacity={z.id === activeZoneId ? 0.12 : 0.05}
+                        stroke="none"
+                        ifOverflow="extendDomain"
+                      />
+                    ))}
 
                     <XAxis
                       type="number"
                       dataKey="x"
                       domain={[0, MAX_IMPACT]}
-                      ticks={[0, 50, 100, 150, 200]}
+                      ticks={[0, 150, 300, 450, 600]}
                       tickFormatter={(v: number) => `${v}%`}
                       tick={{ fill: "#F5F5F5", fillOpacity: 0.45, fontSize: 11 }}
                       stroke="#ffffff"
