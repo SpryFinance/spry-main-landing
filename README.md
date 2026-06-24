@@ -41,7 +41,7 @@ This landing page is one of several repositories under
 | ---------- | ----------- |
 | [spry-contracts](https://github.com/SpryFinance/spry-contracts) | Uniswap V4 hook that turns arbitrage-driven impermanent loss into LP revenue. Large swaps pay a dynamic, tier-aware fee that accrues to liquidity providers. |
 | [spry-interface](https://github.com/SpryFinance/spry-interface) | Web interface for Spry, the dynamic-fee Uniswap V4 hook. Swap, provide liquidity, and create pools across the five fee tiers; a Spry-native Uniswap-interface fork on Unichain Sepolia & Base Sepolia. |
-| [spry-subgraph](https://github.com/SpryFinance/spry-subgraph) | The Graph subgraph for Spry, the dynamic-fee Uniswap V4 hook. Indexes pools, per-swap tier-aware fees, and the hook's fee-curve telemetry for LP analytics. |
+| [spry-subgraph](https://github.com/SpryFinance/spry-subgraph) | Goldsky subgraph for Spry, the dynamic-fee Uniswap V4 hook. Indexes pools, per-swap tier-aware fees, and the hook's fee-curve telemetry for LP analytics. |
 | spry-main-landing | This repository: the official landing page, live at [spry.fi](https://spry.fi). |
 
 ## Tech Stack

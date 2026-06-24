@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect, useRef, Suspense } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,11 +17,24 @@ import {
   Mail,
   Menu,
   X,
+  Coins,
+  Gauge,
+  FlaskConical,
+  LineChart,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import BlackHole from "@/components/blackhole";
 import GooShader from "@/components/goo-shader";
+import EcosystemStrip from "@/components/ecosystem-strip";
+import { AnimatedNumber } from "@/components/animated-number";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+// The fee curve pulls in recharts; lazy-load it client-side so it stays off
+// the initial landing bundle and never blocks LCP.
+const SpryFeeCurve = dynamic(() => import("@/components/spry-fee-curve"), {
+  ssr: false,
+  loading: () => <div className="min-h-[640px]" aria-hidden />,
+});
 
 // Animation variants for staggering children
 const containerVariants: Variants = {
@@ -43,24 +57,49 @@ const itemVariants: Variants = {
 };
 
 const NAV_LINKS = [
+  { href: "#fee-curve", label: "Fee Curve" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How It Works" },
   { href: "#philosophy", label: "Philosophy" },
 ];
 
-const STATS = [
-  { value: "5", label: "Fee tiers, one per pool profile" },
-  { value: "0.01-1%", label: "Base fees for routine swaps" },
-  { value: "9.9%", label: "Fee cap on arbitrage-sized trades" },
-  { value: "264", label: "Tests passing, open source" },
+type Stat = {
+  value: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  /** Override for non-countable display strings (e.g. ranges). */
+  display?: string;
+  label: string;
+  icon: React.ElementType;
+};
+
+const STATS: Stat[] = [
+  { value: 5, label: "Fee tiers, one per pool profile", icon: Layers },
+  {
+    value: 1,
+    suffix: "%",
+    display: "0.01-1%",
+    label: "Base fees for routine swaps",
+    icon: Coins,
+  },
+  {
+    value: 9.9,
+    decimals: 1,
+    suffix: "%",
+    label: "Fee cap on arbitrage-sized trades",
+    icon: Gauge,
+  },
+  { value: 264, label: "Tests passing, open source", icon: FlaskConical },
 ];
 
+// Tier colors mirror the SpryFeeCurve terminal so the two sections never drift.
 const TIERS = [
-  { name: "Stable", tick: "tick spacing 1", dot: "#86EFAC" },
-  { name: "Like-Asset", tick: "tick spacing 10", dot: "#5EEAD4" },
-  { name: "Blue-Chip", tick: "tick spacing 60", dot: "#7DD3FC" },
-  { name: "Volatile", tick: "tick spacing 200", dot: "#C084FC" },
-  { name: "Exotic", tick: "tick spacing 1000", dot: "#A900FF" },
+  { name: "Stable", tick: 1, base: "0.01%", profile: "USDC / USDT, stETH / ETH", dot: "#86EFAC" },
+  { name: "Like-Asset", tick: 10, base: "0.05%", profile: "wstETH / ETH", dot: "#8936FF" },
+  { name: "Blue-Chip", tick: 60, base: "0.30%", profile: "ETH / USDC, WBTC / ETH", dot: "#6B21D8" },
+  { name: "Volatile", tick: 200, base: "0.50%", profile: "ETH / mid-caps", dot: "#A900FF" },
+  { name: "Exotic", tick: 1000, base: "1.00%", profile: "Long-tail pairs", dot: "#C77DFF" },
 ];
 
 const STEPS = [
@@ -366,9 +405,19 @@ export default function LandingPageV6() {
                     </a>
                   </Button>
                 </div>
-                <p className="text-sm text-spry-fog/60">
-                  Start providing liquidity in dynamic-fee v4 pools
-                </p>
+                <div className="flex flex-col items-center gap-2">
+                  <a
+                    href="#fee-curve"
+                    className="group inline-flex items-center gap-1.5 text-sm text-spry-fog/70 hover:text-white transition-colors"
+                  >
+                    <LineChart className="h-4 w-4 text-spry-mint/80" />
+                    See how the fee curve works
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                  <p className="text-sm text-spry-fog/50">
+                    Start providing liquidity in dynamic-fee v4 pools
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -388,10 +437,21 @@ export default function LandingPageV6() {
                 <motion.div
                   key={stat.label}
                   variants={itemVariants}
-                  className="bg-spry-fog/5 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-5 text-center shadow-xl shadow-spry-violet/5"
+                  className="group relative overflow-hidden bg-spry-fog/5 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-5 text-center shadow-xl shadow-spry-violet/5"
                 >
-                  <p className="text-2xl md:text-3xl font-display font-semibold text-white">
-                    {stat.value}
+                  <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-spry-mint/40 to-transparent" />
+                  <stat.icon className="mx-auto mb-2 h-5 w-5 text-spry-mint/70" />
+                  <p className="text-2xl md:text-3xl font-display font-semibold tabular-nums text-white">
+                    {stat.display ? (
+                      stat.display
+                    ) : (
+                      <AnimatedNumber
+                        value={stat.value}
+                        decimals={stat.decimals}
+                        prefix={stat.prefix}
+                        suffix={stat.suffix}
+                      />
+                    )}
                   </p>
                   <p className="mt-1 text-xs md:text-sm text-spry-fog/60">
                     {stat.label}
@@ -401,6 +461,9 @@ export default function LandingPageV6() {
             </motion.div>
           </div>
         </section>
+
+        {/* Signature interactive: dynamic-fee curve terminal */}
+        <SpryFeeCurve />
 
         {/* Features Section */}
         <section id="features" className="py-20 md:py-28 bg-spry-ink relative scroll-mt-24">
@@ -435,25 +498,32 @@ export default function LandingPageV6() {
                 icon={<Leaf className="w-7 h-7 text-spry-mint/90" />}
                 title="IL Becomes Income"
                 description="The arbitrage flow that causes impermanent loss pays escalating fees, and that excess is routed straight back to LPs."
+                metric="Excess fees to LPs"
               />
               <FeatureCard
                 icon={<Activity className="w-7 h-7 text-spry-mint/90" />}
                 title="Fees That Read the Market"
                 description="No flat rates. Each swap is priced by size and cumulative price impact, from the tier's base fee up to a 9.9% cap."
+                metric="Base to 9.9% cap"
               />
               <FeatureCard
                 icon={<Layers className="w-7 h-7 text-spry-mint/90" />}
                 title="Five Pool Tiers"
                 description="Stable, Like-Asset, Blue-Chip, Volatile and Exotic curves, dispatched automatically by tick spacing with base fees from 0.01% to 1.00%."
+                metric="0.01% to 1.00% base"
               />
               <FeatureCard
                 icon={<ShieldCheck className="w-7 h-7 text-spry-mint/90" />}
                 title="Path-Independent by Design"
                 description="Marginal integral pricing makes fees path-independent within a block window: no discounts for splitting, no loopholes for MEV."
+                metric="Path-independent per block"
               />
             </motion.div>
           </div>
         </section>
+
+        {/* Ecosystem trust strip */}
+        <EcosystemStrip />
 
         {/* How It Works Section */}
         <section
@@ -525,25 +595,47 @@ export default function LandingPageV6() {
                   Dispatched by pool tick spacing, from calm to wild
                 </p>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                {TIERS.map((tier) => (
-                  <div
-                    key={tier.name}
-                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-spry-ink/40 px-4 py-3 hover:border-white/25 transition-colors duration-300"
-                  >
-                    <span
-                      className="h-2.5 w-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: tier.dot }}
-                      aria-hidden
-                    />
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-white">
-                        {tier.name}
-                      </p>
-                      <p className="text-xs text-spry-fog/50">{tier.tick}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[480px] border-collapse text-left">
+                  <thead>
+                    <tr className="border-b border-white/10 font-mono text-[11px] uppercase tracking-wider text-spry-fog/40">
+                      <th className="py-2 pr-4 font-medium">Tier</th>
+                      <th className="py-2 px-4 font-medium text-right">tickSpacing</th>
+                      <th className="py-2 px-4 font-medium text-right">Base fee</th>
+                      <th className="py-2 pl-4 font-medium">Profile</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {TIERS.map((tier) => (
+                      <tr
+                        key={tier.name}
+                        className="border-b border-white/5 last:border-0 odd:bg-white/[0.015] transition-colors hover:bg-white/[0.04]"
+                      >
+                        <td className="py-3 pr-4">
+                          <span className="flex items-center gap-2.5">
+                            <span
+                              className="h-2.5 w-2.5 shrink-0 rounded-full"
+                              style={{ backgroundColor: tier.dot }}
+                              aria-hidden
+                            />
+                            <span className="font-medium text-white">
+                              {tier.name}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right font-mono tabular-nums text-spry-fog/70">
+                          {tier.tick}
+                        </td>
+                        <td className="py-3 px-4 text-right font-mono tabular-nums text-white">
+                          {tier.base}
+                        </td>
+                        <td className="py-3 pl-4 text-sm text-spry-fog/55">
+                          {tier.profile}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </motion.div>
           </div>
@@ -843,22 +935,26 @@ const FeatureCard = ({
   icon,
   title,
   description,
+  metric,
 }: {
   icon: React.ReactNode;
   title: string;
   description: string;
+  metric: string;
 }) => (
   <motion.div
-    className="bg-spry-fog/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 hover:bg-spry-fog/10 hover:border-spry-violet/40 transition-all duration-500 transform hover:-translate-y-2 shadow-xl shadow-spry-violet/5 hover:shadow-spry-violet/10 group"
+    className="flex flex-col bg-spry-fog/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 hover:bg-spry-fog/10 hover:border-spry-violet/40 transition-all duration-500 transform hover:-translate-y-1 shadow-xl shadow-spry-violet/5 hover:shadow-spry-violet/10 group"
     variants={itemVariants}
-    whileHover={{ scale: 1.02 }}
   >
-    <div className="mb-4 inline-flex p-3 rounded-xl bg-spry-mint/10 border border-spry-mint/20 transform group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">
+    <div className="mb-4 inline-flex w-fit p-3 rounded-xl bg-spry-mint/10 border border-spry-mint/20 transform group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">
       {icon}
     </div>
     <h3 className="text-xl font-display font-semibold text-white mb-2 drop-shadow-sm">
       {title}
     </h3>
     <p className="text-spry-fog/70 leading-relaxed">{description}</p>
+    <p className="mt-4 pt-3 border-t border-white/10 font-mono text-[11px] uppercase tracking-wider text-spry-mint/70">
+      {metric}
+    </p>
   </motion.div>
 );
