@@ -174,6 +174,23 @@ export default function LandingPageV6() {
     };
   }, [isMobile]);
 
+  // Smooth-scroll in-page navigation without writing a hash to the URL.
+  const handleScrollTo = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (!href.startsWith("#")) return;
+    e.preventDefault();
+    const id = href.slice(1);
+    const target = id ? document.getElementById(id) : null;
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div className="w-full min-h-screen bg-spry-ink text-spry-fog font-sans relative overflow-x-hidden">
       {/* Subtle background glass orbs */}
@@ -193,6 +210,7 @@ export default function LandingPageV6() {
                 className="flex items-center gap-2 md:gap-3"
                 prefetch={false}
                 aria-label="Spry Finance home"
+                onClick={(e) => handleScrollTo(e, "#")}
               >
                 <div className="p-1.5 md:p-2 bg-spry-fog/10 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
                   <Image
@@ -217,6 +235,7 @@ export default function LandingPageV6() {
                     href={link.href}
                     className="hover:text-white transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(137,54,255,0.6)]"
                     prefetch={false}
+                    onClick={(e) => handleScrollTo(e, link.href)}
                   >
                     {link.label}
                   </Link>
@@ -271,7 +290,7 @@ export default function LandingPageV6() {
                     href={link.href}
                     className="px-2 py-2 rounded-lg text-spry-fog/80 hover:text-white hover:bg-white/5 transition-colors"
                     prefetch={false}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => handleScrollTo(e, link.href)}
                   >
                     {link.label}
                   </Link>
@@ -409,6 +428,7 @@ export default function LandingPageV6() {
                   <a
                     href="#fee-curve"
                     className="group inline-flex items-center gap-1.5 text-sm text-spry-fog/70 hover:text-white transition-colors"
+                    onClick={(e) => handleScrollTo(e, "#fee-curve")}
                   >
                     <LineChart className="h-4 w-4 text-spry-mint/80" />
                     See how the fee curve works
@@ -835,6 +855,7 @@ export default function LandingPageV6() {
                       href="#features"
                       className="hover:text-white transition-colors"
                       prefetch={false}
+                      onClick={(e) => handleScrollTo(e, "#features")}
                     >
                       Features
                     </Link>
@@ -844,6 +865,7 @@ export default function LandingPageV6() {
                       href="#how-it-works"
                       className="hover:text-white transition-colors"
                       prefetch={false}
+                      onClick={(e) => handleScrollTo(e, "#how-it-works")}
                     >
                       How It Works
                     </Link>
@@ -853,6 +875,7 @@ export default function LandingPageV6() {
                       href="#philosophy"
                       className="hover:text-white transition-colors"
                       prefetch={false}
+                      onClick={(e) => handleScrollTo(e, "#philosophy")}
                     >
                       Philosophy
                     </Link>
